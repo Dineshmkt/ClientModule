@@ -219,7 +219,7 @@ const RolePage = ({ storedData, setStoredData }) => {
 
     try {
       const res = await fetch(
-        "https://689c201f58a27b18087cfaa5.mockapi.io/api/v1/roles",
+        "https://689c201f58a27b18087cfaa5.mockapi.io/api/v1/users",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -401,7 +401,7 @@ const RolePage = ({ storedData, setStoredData }) => {
         </div>
 
         {/* Functional Area */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium mb-1">Functional Area</label>
           <select
             value={formData.functionalArea}
@@ -415,7 +415,8 @@ const RolePage = ({ storedData, setStoredData }) => {
             <option value="Marketing">Marketing</option>
             <option value="Operations">Operations</option>
           </select>
-        </div>
+        </div> */}
+        
 
         {/* Status */}
         <div>

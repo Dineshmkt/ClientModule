@@ -1,13 +1,3 @@
-// const PermissionPage = () => {
-//   return (
-//     <div>
-//       <h1>permission page</h1>
-//     </div>
-//   )
-// }
-
-// export default PermissionPage
-
 
 import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
