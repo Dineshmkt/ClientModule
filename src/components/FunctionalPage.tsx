@@ -31,17 +31,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
     }
   };
 
-  // const validateForm = () => {
-  //   const newErrors = {};
-  //   if (!formData.functionalAreaName.trim()) newErrors.functionalAreaName = "Please enter the Functional Area Name.";
-  //   if (!formData.definition.trim()) newErrors.definition = "Please enter a Definition.";
-  //   if (!formData.startDate) newErrors.startDate = "Start Date is required.";
-  //   if (!formData.endDate) newErrors.endDate = "End Date is required.";
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
 
-  
   const validateForm = () => {
   const newErrors: ErrorFields = {};
 
@@ -238,14 +228,15 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
 //   const activeClients = clients.filter(
 //   (c) => c.client && c.status && c.client.status?.toLowerCase() === "active"
 // );
+
 console.log(activeClients)
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = activeClients.find(
-      (c) => c.name === e.target.value
-    );
-    setSelectedClient(selected || null);
-  };
+  // const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selected = activeClients.find(
+  //     (c) => c.name === e.target.value
+  //   );
+  //   setSelectedClient(selected || null);
+  // };
 
 
   return (
@@ -356,8 +347,7 @@ console.log(activeClients)
     ))}
   </select>
 </div>
-
-
+       
         {/* Start Date */}
         <div className="relative">
           <label className="block text-sm font-medium mb-1">

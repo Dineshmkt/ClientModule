@@ -66,12 +66,12 @@ const Admin = () => {
           })}
         </nav>
 
-        <div className="p-4 bg-gray-100 m-4 rounded-lg">
+        {/* <div className="p-4 bg-gray-100 m-4 rounded-lg">
           <p className="text-xs text-gray-600 font-medium mb-1">Data Storage</p>
           <p className="text-xs text-gray-500">
             Functional Areas: {storedData.functionalAreas.length}
           </p>
-        </div>
+        </div> */}
       </div>
 
       {/* Main Content */}
