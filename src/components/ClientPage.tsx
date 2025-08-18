@@ -8,12 +8,13 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     isExternal: false,
     alignClients: [],
     startDate: "",
-    endDate: ""
+    endDate: "",
+    status: "" // if not need means, then delete it 
   });
   const [errors, setErrors] = useState({});
   const [showDatePicker, setShowDatePicker] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-
+  console.log("storedData",storedData) ;    // just normall purpose use this
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -29,6 +30,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
   const handleSave = async () => {
   if (!validateForm()) return;
 
@@ -41,7 +43,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
       // alignClients: formData.alignClients,
       startDate: formData.startDate,
       endDate: formData.endDate,
-      status: formData.status || "", // in case it's empty
+      status: formData.status || "",    
     }
   };
 
@@ -82,7 +84,8 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
   }
 };
 
-  const renderDatePicker = (field: any) => {
+  const renderDatePicker = (field: any) => 
+{
   const date = new Date(currentDate);
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -93,13 +96,11 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     "July","August","September","October","November","December"
   ];
 
-  // Weekday names (starting Monday)
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const days: JSX.Element[] = [];
 
-  // Adjust first day index for Monday start
-  const adjustedFirstDay = (firstDayOfMonth + 6) % 7; // Shift Sunday(0) to end
+  const adjustedFirstDay = (firstDayOfMonth + 6) % 7; 
 
   for (let i = 0; i < adjustedFirstDay; i++) {
     days.push(<div key={`empty-${i}`} className="w-8 h-8" />);
@@ -107,18 +108,39 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+       const dateObj = new Date(dateString);
+
+    let isDisabled = false;
+
+   
+    if (field === "endDate") {
+      if (!formData.startDate) {
+        
+        isDisabled = true;
+      } else {
+        const start = new Date(formData.startDate);
+        if (dateObj < start) {
+          isDisabled = true; 
+        }
+      }
+    }
     days.push(
       <button
         key={day}
         onClick={() => {
-          handleInputChange(field, dateString);
-          setShowDatePicker(null);
+          if (!isDisabled) {
+            handleInputChange(field, dateString);
+            setShowDatePicker(null);
+          }
         }}
+        disabled={isDisabled}
         className={`w-8 h-8 text-sm rounded ${
           formData[field] === dateString
             ? "bg-blue-600 text-white"
             : "text-gray-700 hover:bg-blue-100"
-        }`}
+        } 
+        ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
+        `}
       >
         {day}
       </button>
@@ -215,7 +237,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
         <div>
   <label className="block text-sm font-medium mb-1">Status</label>
   <select
-    value={formData.status} // single value, not array
+    value={formData.status}      // single value, not array
     onChange={(e) => handleInputChange("status", e.target.value)}
     className="w-full border rounded px-3 py-2"
   >
@@ -224,8 +246,6 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     <option value="Inactive">Inactive</option>
   </select>
 </div>
-
-
         {/* Start Date */}
         <div className="relative">
           <label className="block text-sm font-medium mb-1">Start Date</label>

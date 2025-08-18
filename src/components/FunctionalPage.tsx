@@ -185,9 +185,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
   useEffect(() => {
     fetch("https://689c201f58a27b18087cfaa5.mockapi.io/api/v1/users") 
       .then((res) => res.json())
-      .then((data) => {
-        // Normalize data into a standard structure
-        
+      .then((data) => {    
         const normalized = data
          .filter((item: any) => "client" in item) 
         .map((item: any) => {
@@ -325,15 +323,14 @@ console.log(activeClients)
         </div> */}
 
         {/* Align Clients */}
-<div>
-  <label className="block text-sm font-medium mb-1">Align Clients</label>
-  <select
-    value={formData.alignClients}
-    onChange={(e) => {
+ <div>
+   <label className="block text-sm font-medium mb-1">Align Clients</label>
+    <select
+     value={formData.alignClients}
+     onChange={(e) => {
       const value = e.target.value;
-      handleInputChange("alignClients", value); // update formData
-
-      // find and set full client object
+      handleInputChange("alignClients", value);  // update formData
+       // find and set full client object
       const selected = activeClients.find((c) => c.name === value);
       setSelectedClient(selected || null);
     }}

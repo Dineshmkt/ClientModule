@@ -1,11 +1,12 @@
-
 import Admin from './components/Admin'
-
+import ErrorBoundary from './ErrorBoundary'
 const App = () => {
   return (
-    <div>
-      <Admin/>
-    </div>
+        <ErrorBoundary>
+          <div>
+            <Admin/>
+           </div>
+    </ErrorBoundary>
   )
 }
 

@@ -70,7 +70,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
 
     try {
       const res = await fetch(
-        "https://689c201f58a27b18087cfaa5.mockapi.io/api/v1/permissions",
+        "https://689c201f58a27b18087cfaa5.mockapi.io/api/v1/users",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -113,10 +113,11 @@ const PermissionPage = ({ storedData, setStoredData }) => {
         ...prev,
         permissionGroups: prev.permissionGroups.filter(pg => pg.id !== group.id)
       }));
+      console.log("selected",formData)
     } else {
       setFormData(prev => ({
         ...prev,
-        permissionGroups: [...prev.permissionGroups, group]
+        permissionGroups: [...(prev.permissionGroups || []), group]
       }));
     }
   };
@@ -172,14 +173,15 @@ const PermissionPage = ({ storedData, setStoredData }) => {
       .then((res) => res.json())
       .then((data) => {
         const normalizedPermissionGroups = data
-          .filter((item) => "permissionGroup" in item)
+          .filter((item) => "permission" in item)
           .map((item) => ({
             id: item.id,
-            name: item.permissionGroup?.groupName || item.Name,
-            status: item.permissionGroup?.status || item.status,
+            name: item.permission?.permissionName || item.Name,
+            status: item.permission?.status || item.status,
           }))
           .filter(group => group.status && group.status.toLowerCase() === "active");
         setPermissionGroups(normalizedPermissionGroups);
+        console.log("permission",normalizedPermissionGroups)
       })
       .catch((err) => console.error("Error fetching permission groups:", err));
 
@@ -199,6 +201,8 @@ const PermissionPage = ({ storedData, setStoredData }) => {
       })
       .catch((err) => console.error("Error fetching roles:", err));
   }, []);
+
+  console.log("roles",roles)
 
   // Filter active clients
   const activeClients = clients.filter(
@@ -326,7 +330,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
                   key={group.id}
                   className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm"
                 >
-                  {group.name}
+                  {group.permissionName}
                   <X
                     className="w-3 h-3 cursor-pointer hover:text-red-600"
                     onClick={() => removePermissionGroup(group.id)}
