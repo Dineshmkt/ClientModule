@@ -8,8 +8,18 @@ type ErrorFields = {
   startDate?: string;
   endDate?: string;
 };
-const FunctionalPage = ({ storedData, setStoredData }) => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  functionalAreaName: string;
+  functionalAreaType: string;
+  isExternal: boolean;
+  definition: string;
+  alignClients: string;
+  startDate: string;
+  endDate: string;
+}
+
+const FunctionalPage = ({ storedData, setStoredData }:any) => {
+  const [formData, setFormData] = useState<FormData>({
     functionalAreaName: "",
     functionalAreaType: "",
     isExternal: false,
@@ -18,20 +28,21 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
     startDate: "",
     endDate: ""
   });
-  const [errors, setErrors] = useState({});
-  const [showDatePicker, setShowDatePicker] = useState(null);
+  
+  const [errors, setErrors] = useState<any>({});
+  const [showDatePicker, setShowDatePicker] = useState<string|null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
    const [clients, setClients] = useState<any[]>([]);
   const [selectedClient, setSelectedClient] = useState<any>(null);
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field:any, value:any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev:any) => ({ ...prev, [field]: "" }));
     }
   };
 
-
+ console.log(storedData)
   const validateForm = () => {
   const newErrors: ErrorFields = {};
 
@@ -83,7 +94,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
 
       const savedData = await res.json();
 
-      setStoredData((prev) => ({
+      setStoredData((prev:any) => ({
         ...prev,
         functionalAreas: [...prev.functionalAreas, savedData],
       }));
@@ -172,7 +183,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
   //   );
   // };
 
-    const renderDatePicker = (field: any) => 
+    const renderDatePicker = (field:  keyof FormData) => 
 {
   const date = new Date(currentDate);
   const year = date.getFullYear();
@@ -186,7 +197,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
 
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const days: JSX.Element[] = [];
+  const days: React.ReactNode[] = [];
 
   const adjustedFirstDay = (firstDayOfMonth + 6) % 7; 
 
@@ -212,27 +223,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
         }
       }
     }
-    // days.push(
-    //   <button
-    //     key={day}
-    //     onClick={() => {
-    //       if (!isDisabled) {
-    //         handleInputChange(field, dateString);
-    //         setShowDatePicker(null);
-    //       }
-    //     }}
-    //     disabled={isDisabled}
-    //     className={`w-8 h-8 text-sm rounded ${
-    //       formData[field] === dateString
-    //         ? "bg-blue-600 text-white"
-    //         : "text-gray-700 hover:bg-blue-100"
-    //     } 
-    //     ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
-    //     `}
-    //   >
-    //     {day}
-    //   </button>
-    // );
+  
 
        days.push(
   <button
@@ -245,7 +236,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
     }}
     disabled={isDisabled}
     className={`w-8 h-8 text-sm rounded 
-      ${formData[field] === dateString ? "bg-blue-600 text-white" : ""}
+       ${formData[field] === dateString ? "bg-blue-600 text-white" : ""}
       ${isDisabled ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
     `}
   >
@@ -281,7 +272,7 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
   );
 };
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e:any) => {
       if (showDatePicker && !e.target.closest(".relative")) {
         setShowDatePicker(null);
       }
@@ -331,19 +322,9 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
     (c) => c.status && c.status.toLowerCase() === "active"
   );
 
-//   const activeClients = clients.filter(
-//   (c) => c.client && c.status && c.client.status?.toLowerCase() === "active"
-// );
+
 
 console.log(activeClients)
-
-  // const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selected = activeClients.find(
-  //     (c) => c.name === e.target.value
-  //   );
-  //   setSelectedClient(selected || null);
-  // };
-
 
   return (
     <div className="bg-gray-50 p-6">
@@ -396,7 +377,7 @@ console.log(activeClients)
             value={formData.definition}
             onChange={(e) => handleInputChange("definition", e.target.value)}
             className="w-full border rounded px-3 py-2"
-            rows="3"
+            rows={3}
             placeholder="Definition"
           />
           {errors.definition && <p className="text-red-500 text-sm">{errors.definition}</p>}
@@ -412,23 +393,7 @@ console.log(activeClients)
           <label className="text-sm">Is External</label>
         </div>
 
-        {/* Align Clients */}
-        {/* <div>
-          <label className="block text-sm font-medium mb-1">Align Clients</label>
-          <select
-            value={formData.alignClients}
-            onChange={(e) => handleInputChange("alignClients", e.target.value)}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Please select client names</option>
-         
-            {activeClients.map((client, idx) => (
-          <option key={idx} value={client.name}>
-            {client.name}
-          </option>
-        ))}
-          </select>
-        </div> */}
+      
 
         {/* Align Clients */}
  <div>

@@ -1,32 +1,46 @@
 import { useState, useEffect } from "react";
 import { Plus, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
+type result={
+  functionalAreaName?:string,
+  definition?:string,
+  startDate?:string
+}
+interface FormData {
+  functionalAreaName: string;
+  isExternal: boolean;
+  definition: string;
+  // alignClients: Array[];
+  startDate: string;
+  endDate: string;
+  status:string
+}
 const ClientPage = ({ storedData, setStoredData }:any) => {
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     functionalAreaName: "",
     definition: "",
     isExternal: false,
-    alignClients: [],
+    // alignClients: [],
     startDate: "",
     endDate: "",
     status: ""          // if not need means, then delete it 
   });
-  const [errors, setErrors] = useState({});
-  const [showDatePicker, setShowDatePicker] = useState(null);
+  const [errors, setErrors] = useState<any>({});
+  const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  console.log("storedData",storedData) ;           // just normall purpose use this 
+  console.log("storedData",storedData) ;     // just normall purpose use this 
  // console.log("curent date",currentDate)
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field:any, value:any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev:any) => ({ ...prev, [field]: "" }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors:result = {};
     if (!formData.functionalAreaName.trim()) newErrors.functionalAreaName = "Please enter the Functional Area Name.";
     if (!formData.definition.trim()) newErrors.definition = "Please enter a Definition.";
     if (!formData.startDate) newErrors.startDate = "Start Date is required.";
@@ -64,7 +78,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
     const savedData = await res.json();
 
-    setStoredData((prev)=>({
+    setStoredData((prev:any)=>({
       ...prev,
       functionalAreas: [...prev.functionalAreas, savedData],
     }));
@@ -75,7 +89,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
       functionalAreaName: "",
       definition: "",
       isExternal: false,
-      alignClients: [],
+      // alignClients: [],
       startDate: "",
       endDate: "",
       status: ""
@@ -87,9 +101,9 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
   }
 };
 
-  const renderDatePicker = (field: any) => 
+  const renderDatePicker = (field:keyof FormData) => 
  {
-  const date = new Date(currentDate);     // it will be select according to our selection process           
+  const date = new Date(currentDate);      // it will be select according to our selection process           
   const year = date.getFullYear();         //2025
   const month = date.getMonth();            //6
   const daysInMonth = new Date(year, month + 1, 0).getDate();      // 31 , give the total number of days for that respective month
@@ -101,7 +115,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const days: JSX.Element[] = [];
+  const days: React.ReactNode[] = [];
 
   const adjustedFirstDay = (firstDayOfMonth + 6) % 7;          //(5+6)%7=4 (friday)
   console.log("adjustedfirstday",adjustedFirstDay)
@@ -114,13 +128,12 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
   {
     const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       console.log("dataString",dateString)
-       const dateObj = new Date(dateString);
+        const dateObj = new Date(dateString);
        console.log("dateObj",dateObj) 
 
      let isDisabled = false; 
-    if (showDatePicker === "endDate") {
-      if (!formData.startDate) {
-        
+    if (field === "endDate") {
+      if (!formData.startDate) {  
         isDisabled = true;
       } else {
         const start = new Date(formData.startDate);
@@ -136,7 +149,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     key={day}
     onClick={() => {
       if (!isDisabled) {
-        handleInputChange(showDatePicker, dateString);
+        handleInputChange(field, dateString);
         setShowDatePicker(null);
       }
     }}
@@ -179,7 +192,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e:any) => {
       if (showDatePicker && !e.target.closest(".relative")) {
         setShowDatePicker(null);
       }
@@ -222,7 +235,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
             value={formData.definition}
             onChange={(e) => handleInputChange("definition", e.target.value)}
             className="w-full border rounded px-3 py-2"
-            rows="3"
+            rows={3}
           />
           {errors.definition && <p className="text-red-500 text-sm">{errors.definition}</p>}
         </div>

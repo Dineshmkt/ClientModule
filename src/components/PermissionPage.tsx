@@ -8,9 +8,17 @@ type ErrorFields = {
   status?: string;
   client?: string;
 };
-
-const PermissionPage = ({ storedData, setStoredData }) => {
-  const [formData, setFormData] = useState({
+type FormDataType = {
+  permissionName: string;
+  definition: string;
+  status: string;
+  client: string;
+  permissionGroups: any[]; 
+  roles: string[]; 
+  id?:string        
+};
+const PermissionPage = ({ storedData, setStoredData }:any) => {
+  const [formData, setFormData] = useState< FormDataType>({
     permissionName: "",
     definition: "",
     status: "",
@@ -18,23 +26,23 @@ const PermissionPage = ({ storedData, setStoredData }) => {
     permissionGroups: [],
     roles: []
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
   const [clients, setClients] = useState([]);
   const [permissionGroups, setPermissionGroups] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
   const [showPermissionGroupDropdown, setShowPermissionGroupDropdown] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field:any, value:any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev:any) => ({ ...prev, [field]: "" }));
     }
   };
-
+  console.log(storedData)
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors:ErrorFields = {};
 
     if (!formData.permissionName.trim()) {
       newErrors.permissionName = "Please enter the Permission Name.";
@@ -82,7 +90,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
 
       const savedData = await res.json();
 
-      setStoredData((prev) => ({
+      setStoredData((prev:any) => ({
         ...prev,
         permissions: [...(prev.permissions || []), savedData],
       }));
@@ -106,7 +114,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
   };
 
   // Multi-select handlers
-  const handlePermissionGroupSelect = (group) => {
+  const handlePermissionGroupSelect = (group:any) => {
     const isSelected = formData.permissionGroups.some(pg => pg.id === group.id);
     if (isSelected) {
       setFormData(prev => ({
@@ -122,12 +130,12 @@ const PermissionPage = ({ storedData, setStoredData }) => {
     }
   };
 
-  const handleRoleSelect = (role) => {
-    const isSelected = formData.roles.some(r => r.id === role.id);
+  const handleRoleSelect = (role:any) => {
+    const isSelected = formData.roles.some((r:any) => r.id === role.id);
     if (isSelected) {
       setFormData(prev => ({
         ...prev,
-        roles: prev.roles.filter(r => r.id !== role.id)
+        roles: prev.roles.filter((r:any) => r.id !== role.id)
       }));
     } else {
       setFormData(prev => ({
@@ -137,17 +145,17 @@ const PermissionPage = ({ storedData, setStoredData }) => {
     }
   };
 
-  const removePermissionGroup = (groupId) => {
+  const removePermissionGroup = (groupId:any) => {
     setFormData(prev => ({
       ...prev,
-      permissionGroups: prev.permissionGroups.filter(pg => pg.id !== groupId)
+      permissionGroups: prev.permissionGroups.filter(pg => pg.id!== groupId)
     }));
   };
 
-  const removeRole = (roleId) => {
+  const removeRole = (roleId:any) => {
     setFormData(prev => ({
       ...prev,
-      roles: prev.roles.filter(r => r.id !== roleId)
+      roles: prev.roles.filter((r:any) => r.id !== roleId)
     }));
   };
 
@@ -158,8 +166,8 @@ const PermissionPage = ({ storedData, setStoredData }) => {
       .then((res) => res.json())
       .then((data) => {
         const normalizedClients = data
-          .filter((item) => "client" in item)
-          .map((item) => ({
+          .filter((item:any) => "client" in item)
+          .map((item:any) => ({
             id: item.id,
             name: item.client?.functionalAreaName || item.Name,
             status: item.client?.status || item.status,
@@ -173,13 +181,13 @@ const PermissionPage = ({ storedData, setStoredData }) => {
       .then((res) => res.json())
       .then((data) => {
         const normalizedPermissionGroups = data
-          .filter((item) => "permission" in item)
-          .map((item) => ({
+          .filter((item:any) => "permission" in item)
+          .map((item:any) => ({
             id: item.id,
             name: item.permission?.permissionName || item.Name,
             status: item.permission?.status || item.status,
           }))
-          .filter(group => group.status && group.status.toLowerCase() === "active");
+          .filter((group:any)=> group.status && group.status.toLowerCase() === "active");
         setPermissionGroups(normalizedPermissionGroups);
         console.log("permission",normalizedPermissionGroups)
       })
@@ -190,13 +198,13 @@ const PermissionPage = ({ storedData, setStoredData }) => {
       .then((res) => res.json())
       .then((data) => {
         const normalizedRoles = data
-          .filter((item) => "role" in item)
-          .map((item) => ({
+          .filter((item:any) => "role" in item)
+          .map((item:any) => ({
             id: item.id,
             name: item.role?.roleName || item.Name,
             status: item.role?.status || item.status,
           }))
-          .filter(role => role.status && role.status.toLowerCase() === "active");
+          .filter((role:any) => role.status && role.status.toLowerCase() === "active");
         setRoles(normalizedRoles);
       })
       .catch((err) => console.error("Error fetching roles:", err));
@@ -206,12 +214,12 @@ const PermissionPage = ({ storedData, setStoredData }) => {
 
   // Filter active clients
   const activeClients = clients.filter(
-    (c) => c.status && c.status.toLowerCase() === "active"
+    (c:any) => c.status && c.status.toLowerCase() === "active"
   );
 
   // Handle click outside for dropdowns
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e:any) => {
       if (!e.target.closest(".multi-select-container")) {
         setShowPermissionGroupDropdown(false);
         setShowRoleDropdown(false);
@@ -262,7 +270,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
             value={formData.definition}
             onChange={(e) => handleInputChange("definition", e.target.value)}
             className="w-full border rounded px-3 py-2"
-            rows="3"
+            rows={3}
             placeholder="Definition"
           />
           {errors.definition && (
@@ -301,13 +309,13 @@ const PermissionPage = ({ storedData, setStoredData }) => {
               handleInputChange("client", value);
               
               // Find and set full client object
-              const selected = activeClients.find((c) => c.name === value);
+              const selected = activeClients.find((c:any) => c.name === value);
               setSelectedClient(selected || null);
             }}
             className="w-full border rounded px-3 py-2"
           >
             <option value="">Please select client</option>
-            {activeClients.map((client, idx) => (
+            {activeClients.map((client:any, idx) => (
               <option key={idx} value={client.name}>
                 {client.name}
               </option>
@@ -350,7 +358,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
           {/* Dropdown */}
           {showPermissionGroupDropdown && (
             <div className="absolute top-full left-0 w-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
-              {permissionGroups.map((group) => (
+              {permissionGroups.map((group:any) => (
                 <div
                   key={group.id}
                   onClick={() => handlePermissionGroupSelect(group)}
@@ -380,7 +388,7 @@ const PermissionPage = ({ storedData, setStoredData }) => {
           {/* Selected Roles Display */}
           <div className="w-full border rounded px-3 py-2 min-h-[40px] bg-white">
             <div className="flex flex-wrap gap-2">
-              {formData.roles.map((role) => (
+              {formData.roles.map((role:any) => (
                 <span
                   key={role.id}
                   className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm"
@@ -405,19 +413,19 @@ const PermissionPage = ({ storedData, setStoredData }) => {
           {/* Dropdown */}
           {showRoleDropdown && (
             <div className="absolute top-full left-0 w-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
-              {roles.map((role) => (
+              {roles.map((role:any) => (
                 <div
                   key={role.id}
                   onClick={() => handleRoleSelect(role)}
                   className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                    formData.roles.some(r => r.id === role.id)
+                    formData.roles.some((r:any) => r.id === role.id)
                       ? "bg-green-50 text-green-600"
                       : ""
                   }`}
                 >
                   <input
                     type="checkbox"
-                    checked={formData.roles.some(r => r.id === role.id)}
+                    checked={formData.roles.some((r:any) => r.id === role.id)}
                     onChange={() => {}}
                     className="mr-2"
                   />

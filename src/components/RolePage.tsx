@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { Plus, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
-const RolePage = ({ storedData, setStoredData }) => {
+type ErrorFields = {
+ roleName ?: string;
+  definition?: string;
+  startDate?: string;
+    endDate ?: string;
+};
+
+const RolePage = ({ storedData, setStoredData }:any) => {
   const [formData, setFormData] = useState({
     roleName: "",
     roleType: "",
@@ -9,22 +16,22 @@ const RolePage = ({ storedData, setStoredData }) => {
     definition: "",
     startDate: "",
     endDate: "",
-    // functionalArea: "",
+  
     status: ""
   });
-  const [errors, setErrors] = useState({});
-  const [showDatePicker, setShowDatePicker] = useState(null);
+  const [errors, setErrors] = useState<any>({});
+  const [showDatePicker, setShowDatePicker] = useState<string|null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleInputChange = (field:any, value:any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev:any) => ({ ...prev, [field]: "" }));
     }
   };
-
+ console.log(storedData)
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors:ErrorFields = {};
     if (!formData.roleName.trim()) newErrors.roleName = "Please enter the Role Name.";
     if (!formData.definition.trim()) newErrors.definition = "Please enter the Definition.";
     if (!formData.startDate) newErrors.startDate = "Start Date is required.";
@@ -64,7 +71,7 @@ const RolePage = ({ storedData, setStoredData }) => {
 
       const savedData = await res.json();
 
-      setStoredData((prev) => ({
+      setStoredData((prev:any) => ({
         ...prev,
         roles: [...prev.roles, savedData],
       }));
@@ -170,7 +177,7 @@ const RolePage = ({ storedData, setStoredData }) => {
 
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const days: JSX.Element[] = [];
+  const days: React.ReactNode[] = [];
 
   const adjustedFirstDay = (firstDayOfMonth + 6) % 7; 
 
@@ -196,27 +203,7 @@ const RolePage = ({ storedData, setStoredData }) => {
         }
       }
     }
-    // days.push(
-    //   <button
-    //     key={day}
-    //     onClick={() => {
-    //       if (!isDisabled) {
-    //         handleInputChange(field, dateString);
-    //         setShowDatePicker(null);
-    //       }
-    //     }}
-    //     disabled={isDisabled}
-    //     className={`w-8 h-8 text-sm rounded ${
-    //       formData[field] === dateString
-    //         ? "bg-blue-600 text-white"
-    //         : "text-gray-700 hover:bg-blue-100"
-    //     } 
-    //     ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
-    //     `}
-    //   >
-    //     {day}
-    //   </button>
-    // );
+   
        days.push(
   <button
     key={day}
@@ -264,7 +251,7 @@ const RolePage = ({ storedData, setStoredData }) => {
   );
 };
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e:any) => {
       if (showDatePicker && !e.target.closest(".relative")) {
         setShowDatePicker(null);
       }
@@ -324,7 +311,7 @@ const RolePage = ({ storedData, setStoredData }) => {
             value={formData.definition}
             onChange={(e) => handleInputChange("definition", e.target.value)}
             className="w-full border rounded px-3 py-2"
-            rows="3"
+            rows={3}
             placeholder="Definition"
           />
           {errors.definition && <p className="text-red-500 text-sm">{errors.definition}</p>}
@@ -340,23 +327,7 @@ const RolePage = ({ storedData, setStoredData }) => {
           <label className="text-sm">Is External</label>
         </div>
 
-        {/* Functional Area */}
-        {/* <div>
-          <label className="block text-sm font-medium mb-1">Functional Area</label>
-          <select
-            value={formData.functionalArea}
-            onChange={(e) => handleInputChange("functionalArea", e.target.value)}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">-- Select Functional Area --</option>
-            <option value="IT">IT</option>
-            <option value="HR">HR</option>
-            <option value="Finance">Finance</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Operations">Operations</option>
-          </select>
-        </div> */}
-
+       
 
         {/* Status */}
         <div>
