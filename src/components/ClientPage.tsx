@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 const ClientPage = ({ storedData, setStoredData }:any) => {
+
   const [formData, setFormData] = useState({
     functionalAreaName: "",
     definition: "",
@@ -9,12 +10,14 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
     alignClients: [],
     startDate: "",
     endDate: "",
-    status: "" // if not need means, then delete it 
+    status: ""          // if not need means, then delete it 
   });
   const [errors, setErrors] = useState({});
   const [showDatePicker, setShowDatePicker] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  console.log("storedData",storedData) ;    // just normall purpose use this
+  console.log("storedData",storedData) ;           // just normall purpose use this 
+ // console.log("curent date",currentDate)
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -61,7 +64,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
     const savedData = await res.json();
 
-    setStoredData((prev) => ({
+    setStoredData((prev)=>({
       ...prev,
       functionalAreas: [...prev.functionalAreas, savedData],
     }));
@@ -85,12 +88,12 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 };
 
   const renderDatePicker = (field: any) => 
-{
-  const date = new Date(currentDate);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
+ {
+  const date = new Date(currentDate);     // it will be select according to our selection process           
+  const year = date.getFullYear();         //2025
+  const month = date.getMonth();            //6
+  const daysInMonth = new Date(year, month + 1, 0).getDate();      // 31 , give the total number of days for that respective month
+  const firstDayOfMonth = new Date(year, month, 1).getDay();      //  new Date(2025, 7, 1); it will be give the starting day- return 4 (friday)
   const monthNames = [
     "January","February","March","April","May","June",
     "July","August","September","October","November","December"
@@ -100,53 +103,54 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
 
   const days: JSX.Element[] = [];
 
-  const adjustedFirstDay = (firstDayOfMonth + 6) % 7; 
+  const adjustedFirstDay = (firstDayOfMonth + 6) % 7;          //(5+6)%7=4 (friday)
+  console.log("adjustedfirstday",adjustedFirstDay)
 
-  for (let i = 0; i < adjustedFirstDay; i++) {
+  for (let i = 0; i < adjustedFirstDay; i++) {                         // it give the first 4 empty space ,because of days starting from friday onwards
     days.push(<div key={`empty-${i}`} className="w-8 h-8" />);
   }
 
-  for (let day = 1; day <= daysInMonth; day++) {
+  for (let day = 1; day <= daysInMonth; day++) 
+  {
     const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      console.log("dataString",dateString)
        const dateObj = new Date(dateString);
+       console.log("dateObj",dateObj) 
 
-    let isDisabled = false;
-
-   
-    if (field === "endDate") {
+     let isDisabled = false; 
+    if (showDatePicker === "endDate") {
       if (!formData.startDate) {
         
         isDisabled = true;
       } else {
         const start = new Date(formData.startDate);
+        console.log("start",start)            // get the start date for the validation
         if (dateObj < start) {
           isDisabled = true; 
         }
       }
     }
+   
     days.push(
-      <button
-        key={day}
-        onClick={() => {
-          if (!isDisabled) {
-            handleInputChange(field, dateString);
-            setShowDatePicker(null);
-          }
-        }}
-        disabled={isDisabled}
-        className={`w-8 h-8 text-sm rounded ${
-          formData[field] === dateString
-            ? "bg-blue-600 text-white"
-            : "text-gray-700 hover:bg-blue-100"
-        } 
-        ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
-        `}
-      >
-        {day}
-      </button>
-    );
-  }
-
+   <button
+    key={day}
+    onClick={() => {
+      if (!isDisabled) {
+        handleInputChange(showDatePicker, dateString);
+        setShowDatePicker(null);
+      }
+    }}
+    disabled={isDisabled}
+    className={`w-8 h-8 text-sm rounded 
+      ${formData[field] === dateString ? "bg-blue-600 text-white" : ""}
+      ${isDisabled ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
+    `}
+  >
+    {day}
+  </button>
+);
+}
+// console.log("days",days)
   return (
     <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg p-4 z-50 shadow">
       <div className="flex justify-between mb-2">
@@ -159,7 +163,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
         </button>
       </div>
 
-  
+    
       <div className="grid grid-cols-7 gap-1 font-semibold text-sm mb-1">
         {weekDays.map((day) => (
           <div key={day} className="w-8 h-8 flex items-center justify-center text-gray-600">
@@ -168,7 +172,6 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
         ))}
       </div>
 
-    
       <div className="grid grid-cols-7 gap-1">{days}</div>
     </div>
   );
@@ -235,17 +238,18 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
         </div>
 
         <div>
-  <label className="block text-sm font-medium mb-1">Status</label>
-  <select
-    value={formData.status}      // single value, not array
-    onChange={(e) => handleInputChange("status", e.target.value)}
-    className="w-full border rounded px-3 py-2"
-  >
-    <option value="">-- Select Status --</option>
-    <option value="Active">Active</option>
-    <option value="Inactive">Inactive</option>
-  </select>
-</div>
+     <label className="block text-sm font-medium mb-1">Status</label>
+    <select
+       value={formData.status}      // single value, not array
+      onChange={(e) => handleInputChange("status", e.target.value)}
+      className="w-full border rounded px-3 py-2"
+    >
+       <option value="">-- Select Status --</option>
+       <option value="Active">Active</option>
+       <option value="Inactive">Inactive</option>
+     </select>
+    </div>
+
         {/* Start Date */}
         <div className="relative">
           <label className="block text-sm font-medium mb-1">Start Date</label>

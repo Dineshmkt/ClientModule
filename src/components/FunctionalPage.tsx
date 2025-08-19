@@ -212,27 +212,46 @@ const FunctionalPage = ({ storedData, setStoredData }) => {
         }
       }
     }
-    days.push(
-      <button
-        key={day}
-        onClick={() => {
-          if (!isDisabled) {
-            handleInputChange(field, dateString);
-            setShowDatePicker(null);
-          }
-        }}
-        disabled={isDisabled}
-        className={`w-8 h-8 text-sm rounded ${
-          formData[field] === dateString
-            ? "bg-blue-600 text-white"
-            : "text-gray-700 hover:bg-blue-100"
-        } 
-        ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
-        `}
-      >
-        {day}
-      </button>
-    );
+    // days.push(
+    //   <button
+    //     key={day}
+    //     onClick={() => {
+    //       if (!isDisabled) {
+    //         handleInputChange(field, dateString);
+    //         setShowDatePicker(null);
+    //       }
+    //     }}
+    //     disabled={isDisabled}
+    //     className={`w-8 h-8 text-sm rounded ${
+    //       formData[field] === dateString
+    //         ? "bg-blue-600 text-white"
+    //         : "text-gray-700 hover:bg-blue-100"
+    //     } 
+    //     ${isDisabled ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
+    //     `}
+    //   >
+    //     {day}
+    //   </button>
+    // );
+
+       days.push(
+  <button
+    key={day}
+    onClick={() => {
+      if (!isDisabled) {
+        handleInputChange(field, dateString);
+        setShowDatePicker(null);
+      }
+    }}
+    disabled={isDisabled}
+    className={`w-8 h-8 text-sm rounded 
+      ${formData[field] === dateString ? "bg-blue-600 text-white" : ""}
+      ${isDisabled ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-blue-100"}
+    `}
+  >
+    {day}
+  </button>
+);
   }
 
   return (
