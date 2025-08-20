@@ -29,7 +29,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
   const [errors, setErrors] = useState<any>({});
   const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  console.log("storedData",storedData) ;     // just normall purpose use this 
+  console.log("storedData",storedData) ;    
  // console.log("curent date",currentDate)
 
   const handleInputChange = (field:any, value:any) => {

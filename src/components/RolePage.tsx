@@ -8,8 +8,19 @@ type ErrorFields = {
     endDate ?: string;
 };
 
+interface FormData {
+  roleName: string;
+  roleType:string;
+  isExternal: boolean;
+  definition: string;
+  // alignClients: Array[];
+  startDate: string;
+  endDate: string;
+  status:string
+}
+
 const RolePage = ({ storedData, setStoredData }:any) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     roleName: "",
     roleType: "",
     isExternal: false,
@@ -95,75 +106,8 @@ const RolePage = ({ storedData, setStoredData }:any) => {
     }
   };
 
-  // const renderDatePicker = (field) => {
-  //   const date = new Date(currentDate);
-  //   const year = date.getFullYear();
-  //   const month = date.getMonth();
-  //   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  //   const firstDayOfMonth = new Date(year, month, 1).getDay();
-  //   const monthNames = [
-  //     "January","February","March","April","May","June",
-  //     "July","August","September","October","November","December"
-  //   ];
 
-  //   // Weekday names (starting Monday)
-  //   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-  //   const days = [];
-
-  //   // Adjust first day index for Monday start
-  //   const adjustedFirstDay = (firstDayOfMonth + 6) % 7; // Shift Sunday(0) to end
-
-  //   for (let i = 0; i < adjustedFirstDay; i++) {
-  //     days.push(<div key={`empty-${i}`} className="w-8 h-8" />);
-  //   }
-
-  //   for (let day = 1; day <= daysInMonth; day++) {
-  //     const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  //     days.push(
-  //       <button
-  //         key={day}
-  //         onClick={() => {
-  //           handleInputChange(field, dateString);
-  //           setShowDatePicker(null);
-  //         }}
-  //         className={`w-8 h-8 text-sm rounded ${
-  //           formData[field] === dateString
-  //             ? "bg-blue-600 text-white"
-  //             : "text-gray-700 hover:bg-blue-100"
-  //         }`}
-  //       >
-  //         {day}
-  //       </button>
-  //     );
-  //   }
-
-  //   return (
-  //     <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg p-4 z-50 shadow">
-  //       <div className="flex justify-between mb-2">
-  //         <button onClick={() => setCurrentDate(new Date(year, month - 1, 1))}>
-  //           <ChevronLeft />
-  //         </button>
-  //         <span>{monthNames[month]} {year}</span>
-  //         <button onClick={() => setCurrentDate(new Date(year, month + 1, 1))}>
-  //           <ChevronRight />
-  //         </button>
-  //       </div>
-
-  //       <div className="grid grid-cols-7 gap-1 font-semibold text-sm mb-1">
-  //         {weekDays.map((day) => (
-  //           <div key={day} className="w-8 h-8 flex items-center justify-center text-gray-600">
-  //             {day}
-  //           </div>
-  //         ))}
-  //       </div>
-
-  //       <div className="grid grid-cols-7 gap-1">{days}</div>
-  //     </div>
-  //   );
-  // };
-
-    const renderDatePicker = (field: any) => 
+    const renderDatePicker = (field:keyof FormData ) => 
 {
   const date = new Date(currentDate);
   const year = date.getFullYear();
