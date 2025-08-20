@@ -131,7 +131,7 @@ const ClientPage = ({ storedData, setStoredData }:any) => {
         const dateObj = new Date(dateString);
        console.log("dateObj",dateObj) 
 
-     let isDisabled = false; 
+    let isDisabled = false; 
     if (field === "endDate") {
       if (!formData.startDate) {  
         isDisabled = true;
