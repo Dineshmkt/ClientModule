@@ -27,7 +27,6 @@ const RolePage = ({ storedData, setStoredData }:any) => {
     definition: "",
     startDate: "",
     endDate: "",
-  
     status: ""
   });
   const [errors, setErrors] = useState<any>({});
